@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 
 # Managing and saving the workspace
 
-R has functions for learning about the collection of objects in your workspace. Some of this is built in to RStudio.
+R has functions for learning about the collection of objects in your workspace.
+Some of this is built in to RStudio.
 
 ```{r}
 x <- rnorm(5)
@@ -98,13 +99,16 @@ install.packages(
     'knitr',        # Rmarkdown tools
     'scales',       # customized graph axes
     'reprex',       # reproducible examples
-    'xlsx'          # working with excel
+    'xlsx',         # working with excel
+    'PKPDsim'       # simulate concentration-time curves given PK parameters
   )
 )
 ```
 
 Note that packages often are dependent on other packages so these dependencies 
-may be installed and loaded automatically.
+may need to be installed first. This should happen automatically, but sometimes
+you might get prompted that there was a problem installing a package because
+some dependency was missing.
 
 You can also install directly from a package zip/tarball rather than from CRAN 
 by giving a filename instead of a package name.
@@ -154,20 +158,10 @@ library(dplyr)
 stats::t.test(rnorm(15, 6), rnorm(20, 7))
 
 # This is useful when two functions have the same name:
-?stats::lm
-ls('package:stats')[1:20]
-lm <- function(i) {
-   print(i)
-}
-lm(7) 
-lm(gap$lifeExp ~ gap$gdpPercap)
-stats::lm(gap$lifeExp ~ gap$gdpPercap)
-rm(lm)
-
+?filter
 
 ```
 
-Can you explain what is going on? Consider the results of `search()`.
 
 
 ### Looking inside a package
@@ -195,7 +189,7 @@ Why make a package?
 * It helps make your work reproducible
 * It forces you to be more formal about your coding, which will improve your code
 
-See the *devtools* package and `package.skeleton()` for some useful tools to 
+See the *devtools* package and *usethis* package for some useful tools to 
 help you create a package. And there are lots of tips/tutorials online, in 
 particular [Hadley Wickham's R packages book](https://r-pkgs.had.co.nz/).
 
@@ -237,7 +231,8 @@ setwd(file.path('data')) # relative path
 # check what is in a folder
 list.files()
 ```
-Many errors and much confusion result from you and R not being on the same page in terms of where in the directory structure you are.
+Many errors and much confusion result from you and R not being on the same page
+in terms of where in the directory structure you are.
 
 # Reading text files into R
 
@@ -285,7 +280,7 @@ languages.
 
 Here you have a number of options. 
 
-1) You can write out R objects to an R Data file, as we've seen using `saveRDS()`.
+1) You can write out R objects to an R Data file using `saveRDS()`.
 2) You can use `write.csv()` and `write.table()` to write data frames to flat 
    text files with delimiters such as comma and tab.
 3) You can use `write()` to write out matrices in a simple flat text format.
@@ -301,18 +296,25 @@ Here you have a number of options.
 *praise*. What does the code below do?
 
 ```{r }
-praise::praise()
+
 ```
 
 2) Figure out what your current working directory is.
 
 ```{r }
-getwd()
+
+```
+
+3) Write the mtcars data frame to your downloads folder. Open it in excel or
+a similar application.
+
+```{r }
+mtcars
 ```
 
 ### Using the ideas
 
-3) Put the *data/all_medalists.csv* file in some other directory on your 
+4) Put the *data/all_medalists.csv* file in some other directory on your 
 computer, such as *Downloads*. Use `setwd()` to set your working directory to be 
 that directory. Read the file in using `read.csv()`.  Now use `setwd()` to point 
 to a different directory such as *Desktop*. Write the data frame out to a file 
@@ -320,10 +322,9 @@ without any row names and without quotes on the character strings.
 
 ```{r }
 
-write.csv(file = "iris.csv", x = iris)
 ```
 
-4) (Optional) If you have a .csv file or a Microsoft Excel file with data that 
+5) (Optional) If you have a .csv file or a Microsoft Excel file with data that 
 you've used for an unrelated project or assignment, try open it now, just to see 
 if you can!
 

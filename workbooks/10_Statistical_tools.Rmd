@@ -184,7 +184,11 @@ distributed).
 ```{r normality_test}
 
 data.frame(A = heights_A, B = heights_B) %>%
-  pivot_longer(everything(), names_to = "measurement_time", values_to = "measurement_val") %>%
+  pivot_longer(
+    everything(), 
+    names_to = "measurement_time", 
+    values_to = "measurement_val"
+  ) %>%
   ggplot() +
   aes(x = measurement_time, y = measurement_val) +
   geom_boxplot()

@@ -267,24 +267,10 @@ visualization theory!
 
 
 
-
-`ggplot2` allows the user to manipulate all four of these items.
-
-Each layer is built up of the following components:
-
-1) Aesthetic mapping (and data) (`ggplot(aes(x = Species, y = Sepal.Length))`)
-
-2) A statistical transformation. (`geom_bar(stat = 'count')`), 
-
-3) Geometric object (`geom_point()`, `geom_bar()`)
-
-4) A position adjustment (ex: how to handle collision between points)
-
-
 ```{r, warning = FALSE, message = FALSE, fig.cap = "", fig.height=2.5}
 ggplot(medal_counts_wide, aes(x = Year, y = Gold)) + 
   geom_point() +
-  ggtitle("Gold Medal Counts")
+  ggtitle("Gold Medal Counts") 
 
 ```
 
@@ -332,112 +318,6 @@ medal_counts %>%
   geom_line()
 ```
 
-# An overview of syntax for various `ggplot2` plots
-
-## densities:
-
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-
-ggplot(data = usa_gold_medals, aes(x = count)) + 
-  geom_density() 
-```
-
-## X-Y scatter plots:
-
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
-  geom_point() 
-
-ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
-  geom_jitter() 
-```
-
-## X-Y line plots: 
-
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
-  geom_line() # ggplot2
-```
-
-## bar plots:
-
-```{r, fig.cap=" ", warning=FALSE, message=FALSE, fig.show = "hold"}
-
-median_gold_medals <- medal_counts %>%
-  filter(Medal == "Gold") %>%
-  # mutate(count = as.double(count)) %>%
-  group_by(NOC) %>%
-  summarise(med = median(count))
-
-head(median_gold_medals)
-
-
-medal_counts %>%
-  ggplot() + 
-  aes(x= NOC, y = count) +
-  geom_bar(stat = 'identity')
-
-```
-
-## boxplots:
-
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-# Notice that here, you must explicitly convert numeric years to factors
-ggplot(data = medal_counts_wide, aes(x = factor(Year), y = Gold)) +
-  geom_boxplot() # ggplot2
-```
-
-## "trellis" plots:
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-# Subset the data to North America countries for easier viewing
-northern_hem <- medal_counts_wide %>%
-  filter(NOC %in% c("USA", "CAN", "CUB", "MEX"))
-
-ggplot(data = northern_hem, aes(x = Year, y = Gold)) + 
-  geom_point() +
-  facet_wrap(~NOC, scales = 'free') 
-
-# Facet wrap can be added as a layer to any type of geom
-```
-
-
-## Contour/tile/image/level plots:
-
-```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
-data(faithfuld)
-
-#faithfuld is a data transformation of faithful, which is a 'built in' data set 
-# describing the time between eruptions and the duration of the eruption for the 
-# Old Faithful geyser in Yellowstone National Park, Wyoming, USA.
-# - eruptions: eruption time in mins
-# - waiting: waiting time to next eruption in mins
-# - density: 2d density estimate
-
-head(faithfuld)
-
-ggplot(data = faithfuld) +
-  aes(x = eruptions, y = waiting) +
-  geom_raster(aes(fill = density)) 
-
-
-ggplot(data = faithfuld) +
-  aes(x = eruptions, y = waiting, fill = density) +
-  geom_contour(aes(z = density)) 
-```
-
-## Heatmaps
-
-```{r}
-df <- expand.grid(x = 0:5, y = 0:5)
-df$z <- sample(10:100, nrow(df), replace = TRUE) * sqrt(df$x) + df$y * 10
-
-df %>%
-  ggplot() +
-  aes(x = x, y = y, fill = z) +
-  geom_tile() +
-  coord_equal()
-
-```
 # aes()
 
 ## Anatomy of `aes()`
@@ -583,6 +463,9 @@ ggplot(data = usa_gold_medals, aes(x = Year, y = count)) +
 Differences in kind
 
 ```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
+northern_hem <- medal_counts_wide %>%
+  filter(NOC %in% c("USA", "CAN", "MEX", "CUB"))
+
 ggplot(data = northern_hem, aes(x = Year, y = Gold)) +
   geom_point(aes(shape = NOC, color = NOC))
 
@@ -873,39 +756,14 @@ plot3 <- ggplot(data = northern_hem, aes(x = Year, y = Gold)) +
 
 # Call grid.arrange
 grid.arrange(plot1, plot2, plot3, nrow=3, ncol = 1)
-grid.arrange(plot1 + labs(tags = "A"), 
-             plot2 + theme(legend.position = 'none') + labs(tags = "B"), 
-             plot3 + theme(legend.position = 'none') + labs(tags = "C"), 
-             layout_matrix = rbind(c(1,1), c(2, 3)))
+grid.arrange(
+  plot1 + labs(tags = "A"), 
+  plot2 + theme(legend.position = 'none') + labs(tags = "B"), 
+  plot3 + theme(legend.position = 'none') + labs(tags = "C"), 
+  layout_matrix = rbind(c(1,1), c(2, 3))
+)
 ```
 # Exporting
-
-Two basic image types:
-
-### **Raster/Bitmap** (.png, .jpeg)
-
-Every pixel of a plot contains its own separate coding; not so great if you want 
-to resize the image
-
-```{r, eval=FALSE}
-jpeg(filename = "example.jpg", width=, height=)
-plot(x,y)
-dev.off()
-```
-
-### **Vector** (.pdf, .ps)
-
-Every element of a plot is encoded with a function that gives its coding 
-conditional on several factors; great for resizing
-
-```{r, eval=FALSE}
-# NOT run
-pdf(file = "example.pdf", width=, height=)
-plot(x,y)
-dev.off()
-```
-
-### Exporting with `ggplot`
 
 ```{r, eval=FALSE}
 # NOT run
@@ -916,7 +774,8 @@ ggsave(
   filename = "example.pdf", 
   plot = plot1, 
   width = 7,
-  height = 7
+  height = 7,
+  bg = "white"
 )
 ```
 
@@ -948,63 +807,38 @@ These questions ask you to work with the gapminder dataset.
 1) Plot a histogram of life expectancy. 
 
 ```{r}
-gap %>%
-  ggplot(aes(x = lifeExp)) +
-  geom_histogram() +
-  xlab("life expectancy (years)")
 
-# ggplot2
-
-hist(gap$lifeExp) # base
 
 ```
 
 2) Plot the life expectancy against gdpPercap. 
 
 ```{r}
-gap %>%
-  ggplot() +
-  aes(x = gdpPercap, y = lifeExp) +
-  geom_point()
+
 ```
 
 3) Clean up your scatterplot with a title and axis labels. Output it as a PDF 
 and see if you'd be comfortable with including it in a report/paper.
 
 ```{r}
-p <- gap %>%
-  ggplot() +
-  aes(x = gdpPercap, y = lifeExp) +
-  geom_point() +
-  xlab("GDP per capita") +
-  ylab("Life Expectancy (years)") +
-  ggtitle("Life Expectancy versus GDP per capita")
 
-ggsave("breakout_plot_3.pdf", p)
 
 ```
 
 4) Make a boxplot of life expectancy conditional on year.
 
 ```{r}
-gap %>%
-  ggplot() +
-  aes(x = factor(year), y = lifeExp) + 
-  geom_boxplot()
+
 
 ```
 
 ### Using the ideas
 
-5) Create a trellis plot of life expectancy by gdpPercap scatterplots, one 
-subplot per year. Use a 3x4 layout of panels in the plot.
+5) Use facet_wrap to create a trellis plot of life expectancy by gdpPercap
+scatterplots, one subplot per year.  
 
 ```{r}
 
-ggplot(gap) +
-  aes(x = gdpPercap, y = lifeExp) +
-  geom_point() +
-  facet_wrap(~year)
 ```
 
 6) Plot life expectancy versus gdpPercap. Now plot so that different continents 
@@ -1015,7 +849,8 @@ be in the range from 100 to 50000.
 
 ```
 
-7) Figure out how to use the log-scale for gdpPercap, without manually calculating the log values.
+7) Figure out how to use the log-scale for gdpPercap, without manually 
+calculating the log values.
 
 ```{r}
 
@@ -1023,14 +858,19 @@ be in the range from 100 to 50000.
 
 ### Advanced
 
-8) Create a "trellis" plot where, for a given year, each panel uses a) hollow circles to plot lifeExp as a function of log(gdpPercap), and b) a red loess smoother without standard errors to plot the trend. Turn off the grey background. Figure out how to use partially-transparent points to reduce the effect of the overplotting of points.
+8) Create a "trellis" plot where, for a given year, each panel uses a) hollow 
+circles to plot lifeExp as a function of log(gdpPercap), and b) a red loess 
+smoother without standard errors to plot the trend. Turn off the grey 
+background. Figure out how to use partially-transparent points to reduce the 
+effect of the overplotting of points.
 
 ```{r}
 
 
 ```
 
-9) Building on your graph in Question 8, change at least two different properties in the `theme()` layer to customize the graph to your liking.
+9) Building on your graph in Question 8, change at least two different 
+properties in the `theme()` layer to customize the graph to your liking.
 
 ```{r}
 

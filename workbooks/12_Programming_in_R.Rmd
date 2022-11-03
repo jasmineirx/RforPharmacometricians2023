@@ -1,5 +1,5 @@
 ---
-title: '11) Programming in R'
+title: '12) Programming in R'
 author: "Jasmine Hughes"
 date: "9/17/2021"
 output: html_document
@@ -49,39 +49,13 @@ like optimization.
 
 ## For loops
 
-```{r, for-example}
-out <- list()
-years <- unique(gap$year)
-length(out) <- length(years)
-names(out) <- years
-
-for (yrIdx in seq_along(years)) {
-     # equivalently: for(i in 1:length(DestSubset))
-     # n.b., seq_along(x) is better than 1:length(x), since it handles the case
-     # where the length of an object is 0 or NULL more robustly.
-     
-  # select the year of this iteration 
-  sub <- filter(gap, year == years[yrIdx])
-   
-     
-  if (sum(!is.na(sub$lifeExp)) && length(sub$lifeExp) > 1) {
-  # as long as data isn't missing...
-  # fit regression
-    out[[yrIdx]] <- lm(lifeExp ~ log(gdpPercap), data = sub)
-  } else {
-    out[[yrIdx]] <- NA
-  }
-}
-out[['1952']]
-summary(out[['2007']])
-summary(out[['1952']])
-
-names(out)
-```
-
 The iterations do not have to explicitly be over sequential numbers.
 
 ```{r, for-nonsequential}
+years <- gap %>%
+  select(year) %>%
+  pull(year) %>%
+  unique()
 for (yr in years) {
  cat(yr, "\n")
 }
@@ -190,31 +164,27 @@ if (val < 0) print("val is negative") else print("val is positive")
 The condition in the if statement cannot be NA or R will give an error. This is
 a very common bug.
 
-```{r, if-bug,eval=FALSE}
-continents <- unique(gap$continent)
-continents
-
-continents <- unique(as.character(gap$continent))
-continents <- c('Antarctica', continents)
-
-out <- rep(0, length(continents))
-for (i in seq_along(continents)) {
-    sub <- filter(gap, continent == continents[i])
-    if(isTRUE(mean(sub$lifeExp) < 50))
-       print(continents[i])
-}
-
-print(i)
-sub <- gap[gap$continent == continents[i], ]
-if(mean(sub$lifeExp) < 50) print('here')
-mean(sub$lifeExp) < 50
-```
-
 An `NA`/`NaN` is the main reason an if statement may fail, because R will
 generally convert other values to logical values.
 
 Zero evaluates to `FALSE`, all other numbers evaluate to `TRUE`. In general
 strings are not converted to booleans.
+
+```{r}
+vec <- c(4, 8)
+if (vec < 6) {
+  print("vec is less than 6")
+} else {
+  print("vec is not less than 6")
+}
+
+vec <- NA
+if (vec < 6) {
+  print("vec is less than 6")
+} else {
+  print("vec is not less than 6")
+}
+```
 
 A more robust alternative is to use `isTRUE()`:
 
@@ -225,16 +195,14 @@ isTRUE(1)
 isTRUE(FALSE)
 isTRUE(TRUE)
 isTRUE(as.logical(1))
-```
 
-```{r, if-bug-fix}
-out <- rep(0, length(continents))
-for (i in seq_along(continents)) {
-  sub <- filter(gap, continent == continents[i])
-  if(isTRUE(mean(sub$lifeExp) > 70)){
-    print(continents[i])
-  }
+vec <- NA
+if (isTRUE(vec < 6)) {
+  print("vec is less than 6")
+} else {
+  print("vec is not less than 6")
 }
+
 ```
 
 
@@ -427,7 +395,6 @@ function produce from earlier in the workshop?  What about:
 
 - `library()`
 - `setwd()`
-- `plot()`
 
 Functions in R are (roughly) *pass-by-value* and not *pass-by-reference*. 
 This means that if you modify an argument inside the function it will not change 
@@ -468,7 +435,8 @@ f(2) # 2 + 2 = 4
 ```
 
 ```{r}
-# f looks outside the function for something called x, since there is no x 'within' the function
+# f looks outside the function for something called x, since there is no x 
+# 'within' the function
 
 g <- function(y) {
   x <- 10
@@ -565,73 +533,34 @@ review of much of what we have covered in this module.
 
 ### Basics
 
-1) Write a for loop that will loop through a vector of values and produce a vector equal to the input vector except with negative values set to zero. (ex: `c(-2.3, 0, 6, 9) should become c(0, 0, 6, 9))
+1) Write a for loop that will loop through a vector of values and produce a
+vector equal to the input vector except with negative values set to zero. (ex:
+`c(-2.3, 0, 6, 9) should become c(0, 0, 6, 9))
 
 ```{r}
-vec <- c(-2.3, 0, 6, 9)
 
-for (v in seq_along(vec)){
-  if (vec[v] < 0) {
-    vec[v] <- 0
-  }
-}
-
-out_vec <- c()
-
-for (v in vec){
-  if (v < 0) {
-    out_vec <- c(out_vec, 0)
-  } else {
-    out_vec <- c(out_vec, v)
-  }
-}
-out_vec
 ```
 
-2) Write an R function that will take an input vector and set any negative values in the vector to zero.
+2) Write an R function that will take an input vector and set any negative
+values in the vector to zero.
 
 ```{r }
-thresh <- function(vec){
-  vec[vec < 0] <- 0
-  vec
-}
 
-test_vec <- c( 1, 2, 3, -1, -2, -3)
-thresh(test_vec)
 ```
 
 ### Using the ideas
 
-2) Write an R function that will take an input vector and set any value below a 
+3) Write an R function that will take an input vector and set any value below a 
 threshold to be the value of threshold. Optionally, the function should instead 
 set values above a threshold to the value of the threshold.
 
 ```{r}
-thresh <- function(vec, upper = NULL){
-  vec[vec < 0] <- 0
-  if (!is.null(upper)) {
-    vec[vec > upper] <- upper
-  }
-  vec
-}
-test_vec <- -3:3
 
-thresh(test_vec, upper = 2)
 ```
 
-3) Augment your function so that it checks that the input is a numeric vector
+4) Augment your function so that it checks that the input is a numeric vector
 and return an error if not. (See the help information for `stop()`.)
 
 ```{r}
-thresh <- function(vec, upper = NULL){
-  if(!is.numeric(vec)) {
-    stop("not a number!")
-  }
-  vec[vec < 0] <- 0
-  if (!is.null(upper)) {
-    vec[vec > upper] <- upper
-  }
-  vec
-}
-thresh(c("red", "blue", "green"))
+
 ```

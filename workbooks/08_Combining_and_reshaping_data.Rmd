@@ -294,7 +294,7 @@ gap_long_tidy2 <- gap_long %>%
     sep = "_"
   ) %>%
   mutate(year = as.numeric(year)) %>%
-  select(continent, country, year, obstype, value)
+  select(continent, country, year, obstype, obs_value)
 
 ?tidyr::separate
 head(gap_long_tidy2)

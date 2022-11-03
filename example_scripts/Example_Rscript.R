@@ -20,7 +20,7 @@ my_graph <- ggplot(my_data_set) +
   scale_color_manual(values = c("magenta4", "orangered2", "turquoise4"))
 
 # Here I will save my graph
-ggsave(file.path("example_scripts", "iris_graph.png"))
+ggsave(file.path("example_scripts", "iris_graph.png"), bg = "white")
 
 # Here I will summarize my data and then save it as a CSV
 summarized_data <- my_data_set %>%
@@ -30,9 +30,9 @@ summarized_data <- my_data_set %>%
     mean_metal_width  = mean(Petal.Width)
   )
 write.csv(
-  summarized_data, 
-  file.path("data", "summarized_iris.csv"),
+  summarized_data,
+  file.path("example_scripts", "summarized_iris.csv"),
   row.names = FALSE
 )
-  
+
 

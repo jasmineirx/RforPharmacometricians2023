@@ -124,7 +124,7 @@ ints <- c(1L, 5L, -3L) # force storage as integer not decimal number
 notints <- c(1, 5, -3)
 identical(ints, notints)
 ```
-## 3) character vector
+## 3) Character vector
 Most common way of storing non-numeric data
 
 ```{r types_of_vectors3}
@@ -141,7 +141,7 @@ cat(chars[5])
 cat(chars[6])
 
 ```
-## 4) logical vector (or boolean vector)
+## 4) Logical vector (or boolean vector)
 ```{r types_of_vectors4}
 
 bools <- c(TRUE, FALSE, TRUE)
@@ -218,16 +218,16 @@ vec1 >= 3 & vec1 %% 2 == 0
 ## first make sure your working directory is the 'workbooks' directory:
 getwd()
 ## if the result is not the 'workbooks' subdirectory of the bootcamp
-## directory, set the working directly along the lines of this:
+## directory, navigate to this directory through the "Files" window,
+## then click The "More (cogwheel)" > Set as working directory
+
+## You can also set the working directly along the lines of this:
 ##
-## setwd('/Users/jasminehughes/Documents/Intro_to_R/RforPharmacometricians2021')
+## setwd('/Users/jasminehughes/Documents/Intro_to_R/RforPharmacometricians2022')
 ##
 ## replace '/Users/jasminehughes/Documents/Intro_to_R/' with whatever directory 
 ## you put the bootcamp materials in; e.g. on Windows it might be something like
 ## 'C:\\Users\\sarah\\R_for_pharmacometricians'
-##
-## You can also try navigate to this directory through the "Files" window,
-## then click The "More (cogwheel)" > Set as working directory
 ##
 ## If you've done that correctly, then the next command reads
 ## in the dataset from the 'data' directory. In the next
@@ -269,7 +269,9 @@ median(c(6, 7, 18, 9.2))
 median(gap[["lifeExp"]])
 ```
 
-Functions generally take arguments, some of which are often optional:
+Let's use this function to calculate something about the data set we just 
+imported
+
 ```{r functions2}
 maxYear <- max(gap$year)
 lifeExp <- gap$lifeExp[gap$year == maxYear]
@@ -277,7 +279,9 @@ median(lifeExp)
 # We just calculated the median life expectancy in 2007!
 ```
 
-* We can embed function calls: 
+* Functions generally take arguments, some of which are often optional.
+
+* We can nest function calls: 
 
 ```{r, hist, fig.cap = ""}
 random_data <- rnorm(1000, mean = 10, sd = 2)
@@ -301,37 +305,6 @@ apropos("mean")
 
 ```
 
-# Basic kinds of R objects
-
-Vectors are not the only kinds of R objects.
-
-### Vectors 
-We saw these earlier!
-
-Vectors of various types (numeric (i.e., decimal/floating point/double), 
-integer, boolean, character), all items must be of the same type
-
-### Data frames
-This is what R does best!
-
-Collections of columns of potentially different types
-
-If you're at home in excel spreadsheets, this might feel most intuitive.
-
-```{r things_to_do_with_dfs}
-head(gap, 10)
-dim(gap)
-nrow(gap)
-names(gap)
-class(gap)
-is.matrix(gap)
-class(gap$year)
-class(gap$lifeExp)
-class(gap$country)
-
-```
-
-
 # Converting between different types of objects
 
 You can use the `as` family of functions.
@@ -342,16 +315,6 @@ ints[4]
 as.character(ints)
 as.numeric(c('3.7', '4.8'))
 ```
-
-Be careful: R tries to be helpful and convert between types/classes when it 
-thinks it's a good idea. Sometimes it is overly optimistic. 
-
-```{r}
-indices <- c(1.7, 2.3, 4.6)
-ints[indices]
-ints[0.999999999]
-```
-
 
 # Be Lazy
 
@@ -373,7 +336,7 @@ Or, create functions you can use within an analysis.
 Sometimes you write some code that isn't a "complete sentence" and R gets
 confused. 
 ```{r eval=FALSE}
-(((9 + 2)))
+(((9 + 2)) # can you spot the problem here?
 ```
 The R console will show a little + sign, indicating it is expecting more.
 
@@ -397,37 +360,25 @@ we loaded earlier. Create a variable called 'x' that contains the mean life
 expectancy. Then, create a vector of length 2 that contains the minimum and 
 maximum life expectancy. 
 ```{r}
-y <- gap[["lifeExp"]]
-#y <- gap$gdpPercap
-#This is where I write my answers!
-x <- mean(gap$lifeExp)
-min(y)
-max(y)
-min_and_max <- c(min(y), max(y))
+
 ```
 
 2) Use functions in R to round 'x' to two decimal places and to two 
 significant digits.
 
 ```{r}
-round(x, 6)
-signif(x, 2)
+
 ```
 
 3) Create a vector of GDP per capita in units of Euros rather than dollars.
 
 ```{r}
-gap$gdpPercap[1:5]
-exchange_rate <- 1.3
-
-gap$gdpPercap * exchange_rate
+exchange_rate <- 1.1
 
 ```
 
 4) Create a boolean (TRUE/FALSE) vector indicating whether total country GDP is greater than 1 trillion dollars. When entering 1 trillion, use R's scientific notation.
 
 ```{r}
-gdp <- gap$gdpPercap
 
-gdp > 1e12
 ```

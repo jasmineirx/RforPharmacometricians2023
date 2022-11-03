@@ -72,9 +72,23 @@ Imagine that we just received the gapminder dataset, but are only interested in
 a few variables in it. We could use the `select()` function to keep only the 
 columns corresponding to variables we select.
 
+Let's take a look at the help documentation for select:
+
+```{r}
+?select
+```
+
+The arguments for select are:
+
+* `.data` this is a data frame, and this is always the first argument for all 
+  tidyverse data frame manipulation functions/
+* `...` this is a place holder for any number of other arguments that can 
+  optionally be passed on. `select` is expecting the names (unquoted) of the 
+  columns you would like to keep or extract.
+
+
 ```{r}
 gap
-?select
 year_country_gdp_dplyr <- select(gap, year, country, gdpPercap)
 head(year_country_gdp_dplyr)
 ```
@@ -101,21 +115,6 @@ We can even check that these two data frames are equivalent:
 all.equal(year_country_gdp_dplyr, year_country_gdp_base)
 ```
 
-Let's take a look at the help documentation for select:
-
-```{r}
-?select
-```
-
-The arguments for select are:
-
-* `.data` this is a data frame, and this is always the first argument for all 
-  tidyverse data frame manipulation functions/
-* `...` this is a place holder for any number of other arguments that can 
-  optionally be passed on. `select` is expecting the names (unquoted) of the 
-  columns you would like to keep or extract.
-
-
 ## `dplyr::filter`
 
 Now let's say we're only interested in African countries. We can use `filter` 
@@ -137,6 +136,8 @@ nrow(gap_africa)              # filter
 ncol(gap)                     # whole
 ncol(year_country_gdp_dplyr)  # select
 ncol(gap_africa)              # filter
+
+?dplyr::filter
 ```
 
 # Combining dplyr operations
@@ -239,40 +240,26 @@ gap %>%
 1. Use `dplyr` to create a data frame containing data from before 1975 with every column except `continent`.
 
 ```{r}
-colnames(gap)
-gap %>%
-  filter(year < 1975) %>%
-  select(-continent)
   
 ```
 
 2. How many countries had a life expectancy greater than 60 in the year 1982?
 
 ```{r}
-le_gt_60_1982 <- gap %>%
-  filter(year == 1982, lifeExp > 60)
-nrow(le_gt_60_1982)
 
-sum(gap$lifeExp > 60 &gap$year == 1982)
 
 ```
 
 3. Use `dplyr` and `grepl()` to filter for countries with the letter "z" in their name.
 
 ```{r}
-gap %>%
-  filter(grepl("z", country, ignore.case = TRUE))
 
-grepl("z", "bus")
-tolower("Zimbabwe")
 
 ```
 
 4. Use `dplyr` to sort the gap data set in reverse alphabetical order.
 
 ```{r}
-gap %>%
-  arrange(desc(country), pop)
-|
+
 
 ```
