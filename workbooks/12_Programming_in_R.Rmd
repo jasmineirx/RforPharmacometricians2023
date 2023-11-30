@@ -225,6 +225,17 @@ bilirubin %>%
 
 ```
 
+# Breakout 1
+
+1) Write a for loop that will loop through a vector of values and produce a
+vector equal to the input vector except with negative values set to zero. (ex:
+`c(-2.3, 0, 6, 9) should become c(0, 0, 6, 9))
+
+```{r}
+vec <- c(-2.3, 0, 6, 9)
+
+```
+
 # Functions
 
 Functions are one of the most important constructs in R (and many other 
@@ -520,20 +531,11 @@ accessed [here](http://r4ds.had.co.nz/). In particular,
 review of much of what we have covered in this module.
 
 
-# Breakout
+# Breakout 2
 
 ### Basics
 
-1) Write a for loop that will loop through a vector of values and produce a
-vector equal to the input vector except with negative values set to zero. (ex:
-`c(-2.3, 0, 6, 9) should become c(0, 0, 6, 9))
-
-```{r}
-vec <- c(-2.3, 0, 6, 9)
-
-```
-
-2) Write an R function that will take an input vector and set any negative
+1) Write an R function that will take an input vector and set any negative
 values in the vector to zero.
 
 ```{r }
@@ -543,7 +545,7 @@ values in the vector to zero.
 
 ### Using the ideas
 
-3) Write an R function that will take an input vector and set any value below a 
+2) Write an R function that will take an input vector and set any value below a 
 threshold to be the value of threshold. Optionally, the function should instead 
 set values above a threshold to the value of the threshold.
 
@@ -551,7 +553,7 @@ set values above a threshold to the value of the threshold.
 
 ```
 
-4) Augment your function so that it checks that the input is a numeric vector
+3) Augment your function so that it checks that the input is a numeric vector
 and return an error if not. (See the help information for `stop()`.)
 
 ```{r}

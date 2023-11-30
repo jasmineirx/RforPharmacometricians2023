@@ -290,6 +290,43 @@ What answer do you expect here?
 "apple" < "banana"
 ```
 
+# Breakout 1
+In general, your answers to any questions should involve writing code to 
+manipulate objects. Don't open excel or another calculator to answer them.
+
+1) Create a vector of the squares of all numbers from 1-10. Save it to a
+variable called `x`
+
+
+```{r}
+# your code goes here!
+
+```
+
+2) Use a logical expression to identify which elements of `x` are less than 20.
+Save this logical vector as a variable called `y`.
+
+```{r}
+
+
+```
+
+3) Use the vector `y` to subset x to return (a) all the elements less than 20 
+and (b) all the elements greater than or equal to 20.
+
+```{r}
+
+
+```
+
+4) How would you interpret the results of these expressions?
+```{r}
+sum(x)
+mean(x)
+
+sum(y)
+mean(y)
+```
 
 # Reading Data From A File
 
@@ -444,10 +481,10 @@ The R console will show a little + sign, indicating it is expecting more.
 Press escape to try again, or complete the "sentence" by adding the missing 
 bracket.
 
-# Breakout
+# Breakout 2
 
 In general, your answers to any questions should involve writing code to 
-manipulate objects. For example, if I ask you to find the maximum flight delay, 
+manipulate objects. For example, if I ask you to find the maximum GDP, 
 do not scan through all the values and find it by eye. Use R to do the 
 calculations and print results.
 
