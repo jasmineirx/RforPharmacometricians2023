@@ -1,7 +1,7 @@
 ---
 title: 'Module 4: Managing your R Environment'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -74,6 +74,7 @@ From the command line, you generally will just do
 ```{r eval = FALSE}
 install.packages('dplyr') 
 ?install.packages
+library(dplyr)
 ```
 That should work without specifying the repository from which to download the 
 package (though sometimes you will be given a menu of repositories from which to 
@@ -86,18 +87,17 @@ need to explicitly tell R to install it in a directory you are able to write in:
 install.packages('dplyr', lib = file.path('~', 'R'))
 ```
 
-Now would be a good point to install the various packages we need for the bootcamp, which can be done easily with the following command:
+Now would be a good point to install the various packages we need for the 
+workshop, which can be done easily with the following command:
 
 ```{r eval=FALSE}
 install.packages(
   c(
-    'tidyverse',    #  also sorts of data science tools!
-    'devtools',     #  making R packages and other more advanced tools
+    'tidyverse',    # all sorts of data science tools!
     'ggplot2',      # graphing!
-    'gridExtra',    # more graphing!
     'haven',        # reading/writing specialized data types
-    'knitr',        # Rmarkdown tools
     'scales',       # customized graph axes
+    'gridExtra',    # combine multiple plots into one
     'reprex',       # reproducible examples
     'xlsx',         # working with excel
     'PKPDsim'       # simulate concentration-time curves given PK parameters
@@ -159,6 +159,7 @@ stats::t.test(rnorm(15, 6), rnorm(20, 7))
 
 # This is useful when two functions have the same name:
 ?filter
+?dplyr::filter
 
 ```
 
@@ -192,6 +193,11 @@ Why make a package?
 See the *devtools* package and *usethis* package for some useful tools to 
 help you create a package. And there are lots of tips/tutorials online, in 
 particular [Hadley Wickham's R packages book](https://r-pkgs.had.co.nz/).
+
+Here are a few packages I've made:
+- https://github.com/insightRX/clinPK: clinical calculations
+- https://github.com/insightRX/PKPDsim: simulate PK/PD curves
+- https://github.com/insightRX/PKPDposterior: Full Bayes estimation for MIPD 
 
 ### When should I create my own package?
 
@@ -285,7 +291,7 @@ Here you have a number of options.
    text files with delimiters such as comma and tab.
 3) You can use `write()` to write out matrices in a simple flat text format.
 4) You can use `cat()` to write to a file, while controlling the formatting.
-5) You can write out in the various file formats mentioned on the previous slide
+5) You can write out in the various file formats mentioned above
 
 
 # Breakout
@@ -296,6 +302,7 @@ Here you have a number of options.
 *praise*. What does the code below do?
 
 ```{r }
+praise::praise()
 
 ```
 
@@ -303,13 +310,14 @@ Here you have a number of options.
 
 ```{r }
 
+
 ```
 
 3) Write the mtcars data frame to your downloads folder. Open it in excel or
 a similar application.
 
 ```{r }
-mtcars
+mtcars # it comes pre-installed with R!
 ```
 
 ### Using the ideas
@@ -374,17 +382,11 @@ repository, which is basically a version-controlled project directory.
 Many people use it with the Github or Bitbucket online hosting services for 
 repositories.
 
-In the introductory material, we've already seen how to get a copy of a Github 
-repository on your local machine. 
-
 "Track changes" but for code.
 
 # Getting R help online
 
-### Mailing lists
-
-There are several mailing lists that have lots of useful postings. In general if 
-you have an error, others have already posted about it.
+### Mailing lists / forums
 
 - [Stack Overflow](https://stackoverflow.com) (R stuff will be tagged with [R])
 - Simple Google searches 
@@ -411,12 +413,14 @@ OS, etc., that you can include in your posting.
 You also want to include a short, focused, [reproducible](https://adv-r.had.co.nz/Reproducibility.html) 
 example of your problem that others can run. 
 
+`reprex` is a great way to communicate your problem with others:
+
 ```{r}
-library(lubridate)
-example_function <- function(y) {
+
+add_1_hour <- function(y) {
   hours(y + 1)
 }
-example_function(7)
+add_1_hour(7)
 # copy the above to your clipboard, then run the line below:
 reprex::reprex()
 

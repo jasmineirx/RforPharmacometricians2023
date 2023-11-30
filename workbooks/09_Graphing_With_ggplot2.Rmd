@@ -1,7 +1,7 @@
 ---
-title: '8) Combining and Reshaping Data'
+title: '9) Graphing with ggplot2'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -24,8 +24,6 @@ medals <- read.csv(
 # This data set is from here: 
 # https://www.theguardian.com/sport/datablog/2012/jun/25/olympic-medal-winner-list-data
 View(medals)
-head(medals)
-head(gap)
 ```
 
 # Why Graph?
@@ -75,7 +73,6 @@ First, we'll use `dplyr` and `tidyr` to count the medals of each type won, for
 each country and each year.
 
 ```{r}
-head(medals)
 # dplyr and tidyr refresher
 medal_counts <- medals %>%
   group_by(Medal, Year, NOC) %>%
@@ -94,7 +91,6 @@ medal_counts_wide <- medal_counts %>%
   mutate(Bronze = ifelse(is.na(Bronze), 0, Bronze)) %>%
   mutate(Silver = ifelse(is.na(Silver), 0, Silver)) %>%
   mutate(Gold = ifelse(is.na(Gold), 0, Gold))
-head(medal_counts_wide)
 ```
 
 Finally, let's subset the data to gold medal counts for the US, for easier plotting.
@@ -140,6 +136,12 @@ too.
 * Base graphics often recognizes the object type and will implement specific 
   plot methods
 * lattice and ggplot2 generally **don't** exhibit this sort of behavior
+
+```{r}
+medal_counts_wide
+
+summary(medal_counts_wide)
+```
 
 ```{r, fig.cap=" "}
 # Calls plotting method for class of the dataset ("data.frame")
@@ -362,7 +364,10 @@ ggplot(data = usa_all_medals) +
     color = Medal, 
     linetype = Medal
   ) +                 # color, linetype are different for each Medal type
-  geom_line(size = 2) # size applies to ALL lines
+  geom_line(size = 2) + # size applies to ALL lines
+  scale_color_manual(
+    values = c(Gold = "gold", Silver = "grey70", Bronze = "orange")
+  )
 ```
 Long data is usually easier to work with in ggplot!
 
@@ -370,17 +375,22 @@ Note what happens when we specify the color parameter outside of the aesthetic
 operator. `ggplot2` views these specifications as invalid graphical parameters.
 
 ```{r, fig.cap=" ", warning=FALSE, error = TRUE}
-ggplot(
-    data = usa_all_medals, 
-    aes(x = Year, y = count, colour = Medal)
-  ) +
+usa_all_medals |>
+  ggplot() +
+  aes(x = Year, y = count, colour = Medal)
   geom_point()
 
 
-ggplot(data = usa_all_medals, aes(x = Year, y = count)) +
-  geom_point(color = "Medal")
-ggplot(data = usa_all_medals, aes(x = Year, y = count)) +
-  geom_point(color = "red")
+usa_all_medals |>
+  ggplot() +
+  aes(x = Year, y = count)
+  geom_point(colour = Medal)
+
+  
+usa_all_medals |>
+  ggplot() +
+  aes(x = Year, y = count)
+  geom_point(colour = "red")
 ```
 
 
@@ -393,9 +403,11 @@ ggplot(data = usa_all_medals, aes(x = Year, y = count)) +
 ```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
 ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
   geom_point() +
-  xlab(label = "Year") +
-  ylab(label = "Number of Gold Medals Won") +
-  ggtitle(label = "Cool Graph") # ggplot2
+  labs(
+    x = "year",
+    y = "Number of medals",
+    title = "My Graph"
+  )
 ```
 
 ### Axis and point scales
@@ -418,7 +430,7 @@ ggplot(data = usa_gold_medals, aes(x = Year, y = count)) +
 ### Colors
 ```{r, fig.cap=" ", warning=FALSE, fig.show = "hold"}
 ggplot(data = usa_gold_medals, aes(x = Year, y = count)) +
-  geom_point(color = colors()[11]) # ggplot2
+  geom_point(color = "darkorange") # ggplot2
 
 ggplot(data = usa_gold_medals, aes(x = Year, y = count)) +
   geom_point(color = "#266F36") # ggplot2
@@ -494,16 +506,14 @@ You can also supply color hexes.
 # Fitted lines and curves with `ggplot2`
 
 ```{r, fig.cap=" ", warning=FALSE, message=FALSE}
-ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
+p <- ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
   geom_point()
 ```
 
 
 ```{r fig.cap=" ", warning=FALSE, message=FALSE}
-# Add linear model (lm) smoother
-ggplot(data = usa_gold_medals, aes(x = Year, y = count)) + 
-  geom_point() +
-  geom_smooth(method = "lm", color = "orange") #by default, adds standard error
+# Add linear model (lm) smoother using geom_smooth
+
 
 ```
 
@@ -513,7 +523,6 @@ ggplot(data = usa_gold_medals, aes(x = Year, y = count)) +
 ggplot(data = usa_all_medals, aes(x = Year, y = count)) +
   geom_point(aes(color = Medal)) +
   geom_smooth(aes(color = Medal), method = "loess", se = FALSE)
-
 
 ```
 
@@ -611,10 +620,12 @@ can be easily added to a plot to change its appearance.
 
 ```{r default_themes}
 # grey
-usa_all_medals %>% 
+p <- usa_all_medals %>% 
   ggplot(aes(x = Year, y = count)) +
   geom_point(aes(color = Medal)) +
-  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) +
+  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) 
+
+p +
   theme_grey()
 
 ```
@@ -623,10 +634,7 @@ usa_all_medals %>%
 ```{r fig.cap=" ", warning=FALSE, message=FALSE}
 
 # minimal
-usa_all_medals %>% 
-  ggplot(aes(x = Year, y = count)) +
-  geom_point(aes(color = Medal)) +
-  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) +
+p +
   theme_minimal()
 
 ```
@@ -635,10 +643,7 @@ usa_all_medals %>%
 ```{r fig.cap=" ", warning=FALSE, message=FALSE}
 
 # black and white
-usa_all_medals %>% 
-  ggplot(aes(x = Year, y = count)) +
-  geom_point(aes(color = Medal)) +
-  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) +
+p +
   theme_bw()
 
 ```
@@ -648,10 +653,7 @@ Academic figures are often very minimalist... to fit that scheme try:
 ```{r fig.cap=" ", warning=FALSE, message=FALSE}
 
 # classic
-usa_all_medals %>% 
-  ggplot(aes(x = Year, y = count)) +
-  geom_point(aes(color = Medal)) +
-  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) +
+p +
   theme_classic() +
   #For this theme in particular, I like to resposition the axis to zero:
   scale_y_continuous(expand = c(0, 0, 0.1, 0.1))
@@ -673,12 +675,8 @@ usa_all_medals %>%
 However, if you don't like these default themes, you can build your own. 
 
 ```{r}
-usa_all_medals %>% 
-  ggplot(aes(x = Year, y = count)) +
-  geom_point(aes(color = Medal)) + 
-  scale_y_continuous(expand = c(0, 0, 0.1, 0.1))+
-  geom_smooth(aes(color = Medal), method = "lm", se = FALSE) +
-  ylab("Number of medals") +
+p +
+  labs(y = "Number of medals") +
   theme(
     legend.position = 'top',
     # most theme elements are specified as a line element, a rect element,
@@ -808,10 +806,9 @@ These questions ask you to work with the gapminder dataset.
 
 ```{r}
 
-
 ```
 
-2) Plot the life expectancy against gdpPercap. 
+2) Plot the life expectancy against gdpPercap using `geom_point`
 
 ```{r}
 
@@ -825,7 +822,7 @@ and see if you'd be comfortable with including it in a report/paper.
 
 ```
 
-4) Make a boxplot of life expectancy conditional on year.
+4) Make a boxplot of life expectancy (y) versus year (x).
 
 ```{r}
 
@@ -834,7 +831,7 @@ and see if you'd be comfortable with including it in a report/paper.
 
 ### Using the ideas
 
-5) Use facet_wrap to create a trellis plot of life expectancy by gdpPercap
+5) Use `facet_wrap` to create a trellis plot of life expectancy by gdpPercap
 scatterplots, one subplot per year.  
 
 ```{r}
@@ -858,11 +855,11 @@ calculating the log values.
 
 ### Advanced
 
-8) Create a "trellis" plot where, for a given year, each panel uses a) hollow 
-circles to plot lifeExp as a function of log(gdpPercap), and b) a red loess 
-smoother without standard errors to plot the trend. Turn off the grey 
-background. Figure out how to use partially-transparent points to reduce the 
-effect of the overplotting of points.
+8) Create a "trellis" plot (using `facet_wrap`) where, for a given year, each 
+panel uses a) hollow circles to plot lifeExp as a function of log(gdpPercap), 
+and b) a red loess smoother without standard errors to plot the trend. Turn off 
+the grey background. Figure out how to use partially-transparent points to 
+reduce the effect of the overplotting of points.
 
 ```{r}
 

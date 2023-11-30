@@ -1,7 +1,7 @@
 ---
 title: '8) Combining and Reshaping Data'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -65,6 +65,7 @@ What happens if we want to calculate mg of drug per kg body weight?
 # left_join adds all the data from the right df 
 # to the matching rows of the left dataframe
 left_join(pt_char, pt_doses)
+pt_doses
 ```
 Note what happens to patient A.C., who does not have dosing information, and 
 patient S.C., for whom we do not have patient characteristics. Also, see how 
@@ -79,14 +80,16 @@ What happened here to A.C., M.H. and S.C.?
 What if we want to keep all entries?
 
 ## `full_join`
+Let's compare `full_join` with `left_join`
 
 ```{r joining3}
 full_join(pt_char, pt_doses)
 ```
 
 ```{r join_by}
-# R will do its best guess to try judge which columns you want to join on if you do not otherwise specify
-# Here, the names match, but not all data is so convenient. Here's a contrived example:
+# R will do its best guess to try judge which columns you want to join on if you
+# do not otherwise specify Here, the names match, but not all data is so
+# convenient. Here's a contrived example:
 pt_doses %>%
   rename(patient = pt) %>%
   left_join(pt_char, by = c("patient" = "pt")) 
@@ -190,7 +193,7 @@ you have "long" format data.
 Lets look at the structure of our original gapminder dataframe:
 
 ```{r}
-head(gap)
+gap
 ```
 
 **Question**: Is this data frame **wide** or **long**?
@@ -248,16 +251,6 @@ to refer to the variable names and variable values. You might also see the terms
 "name" and "value".
 
 ```{r}
-gap_long <- gap_wide %>%
-  pivot_longer(
-    -c(country, continent), 
-    names_to = "obstype_year", 
-    values_to = "obs_value"
-  )
-head(gap_long)
-
-head(gap_wide)
-
 ?pivot_longer
 ```
 
@@ -272,32 +265,16 @@ We are nearly where we want to be. Let's do a little more clean up to make
 
 ```{r}
 # Approach 1: Regular expressions for handling strings.
-gap_long_tidy1 <- gap_long %>%
-  mutate(
-    obstype = gsub("_.*", "", obstype_year),
-    year = gsub(".*_", "", obstype_year),
-    year = as.numeric(year)
-  ) %>%
-  select(continent, country, year, obstype, obs_value)
-
-head(gap_long_tidy1)
+# `gsub` lets us manipulate strings to get the obstype and the year
+# we are changing/adding a column, so we call it from `mutate`
 ```
 
 
 
 ```{r}
-# Approach 2: use a function!
-gap_long_tidy2 <- gap_long %>%
-  tidyr::separate(
-    obstype_year, 
-    into = c("obstype", "year"), 
-    sep = "_"
-  ) %>%
-  mutate(year = as.numeric(year)) %>%
-  select(continent, country, year, obstype, obs_value)
+# Approach 2: use a function! `tidyr::separate`
+?tidyr::separate_wider_delim
 
-?tidyr::separate
-head(gap_long_tidy2)
 ```
 
 ## `tidyr::pivot_wider`
@@ -306,15 +283,44 @@ head(gap_long_tidy2)
 in one column as the new column names, and the values in a second column as the 
 new column values.
 
-```{r}
-gap_long_tidy1 %>%
-  pivot_wider(names_from = obstype, values_from = obs_value) %>%
-  head()
+We can take the dataframe we made about and turn it into the one we are familiar
+with!
 
+```{r}
 ?pivot_wider
 ```
 
 Does that look familiar?
+
+# `tidyselect`
+
+The golden rule of programming is be lazy (or, more positively, Don't Repeat
+Yourself)! If you find yourself typing out a long list of things, maybe there's
+a better way! (There's nearly always a better way!)
+
+```{r}
+# NONMEM is a common modeling software program, and a common output may be:
+nm_out <- data.frame(
+  ID = c(1, 1, 2, 2),
+  TIME = c(0, 100, 0, 100),
+  EVID = c(1, 0, 1, 0),
+  AMT = c(100, 0, 100, 0),
+  IPRED = c(0, 5.6, 0, 7.8),
+  ETA1 = c(0.03, 0.03, -0.05, -0.05), 
+  ETA2 = c(0.9, 0.9, 0.01, 0.01),
+  ETA3 = c(-0.1, -0.1, 0.2, 0.2)
+)
+
+# how do I get just the columns that start with "ETA"?
+
+```
+
+Additional documentation:
+
+```{r}
+?select
+?tidyselect
+```
 
 # Extra Resources
 
@@ -347,6 +353,15 @@ dob <- data.frame(
   date_of_birth = c("1990-11-10", "1972-11-14", "2002-10-31", "1954-08-22"),
   stringsAsFactors = FALSE
 )
+
+```
+
+
+3. Using the `nm_out` dataframe described above, create a data frame where each
+ETA value is its own row for each patient. Remove duplicate rows so each patient
+only has one ETA value for each ETA type.
+
+```{r}
 
 
 ```

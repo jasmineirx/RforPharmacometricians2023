@@ -1,7 +1,7 @@
 ---
 title: '10) Statistical Tools'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -51,7 +51,7 @@ We'll just see the basics of how to fit regressions here.
 
 glm(
   formula = y ~ x1 + x2 + x3 + ..., 
-  family = familyname(link = "linkname"),
+  family = "family_name",
   data = mydata
 )
 ```
@@ -164,14 +164,11 @@ available in other packages.
 ```{r t_tests}
 heights_A <- c(165, 145, 160, 170, 164, 167)
 heights_B <- c(172, 181, 175, 165, 168, 178)
-height_test <- t.test(heights_A, heights_B)
-height_test
 
-attributes(height_test)
-height_test$p.value
-height_test$conf.int
+# do the two populations have a difference in heigths?
+?t.test
 
-t.test(heights_A, heights_B, paired = TRUE)
+# what about a paired t-test (same patient, change in height over time?)
 
 ```
 
@@ -193,10 +190,7 @@ data.frame(A = heights_A, B = heights_B) %>%
   aes(x = measurement_time, y = measurement_val) +
   geom_boxplot()
 
-s_test_b <- shapiro.test(heights_B)
-s_test_b$p.value
-s_test_a <- shapiro.test(heights_A)
-s_test_a$p.value
+?shapiro.test
 
 ```
 
@@ -212,8 +206,9 @@ gap %>%
 
 aov <- aov(formula = lifeExp ~ factor(continent) + factor(year), data = gap)
 
-TukeyHSD(aov)
 summary(aov)
+TukeyHSD(aov)
+
 ```
 This is an example of a one-way ANOVA, but you can build a two-way ANOVA by adding a second independent variable in your formula.
 

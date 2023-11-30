@@ -1,7 +1,7 @@
 ---
 title: '3) The Basics'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -11,29 +11,47 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # R as a calculator
 
+Write some example expressions for each of the math operations below:
+
 ```{r computing,echo=TRUE,results='markup'}
-2 + 2  # add numbers
-2 * 3  # multiply numbers
-3 ^ 4  # powers
-3 ** 4 # powers
-2 * pi # multiply by a constant
-(3 + 4) * 2 # order of operations
+# add numbers using +
+
+# multiply numbers using *
+
+# powers: two ways! `**` or `^`
+
+# R uses math orders of operation: control with parentheses: ()
+
 ```
 
-```{r computing2,echo=TRUE,results='markup'}
-sqrt(4^4) # square root
-23 %% 2   # remainder
-log(10)   # logarithms (what is the default base?)
-log(100, base = 10)  # you can pass other arguments to change the base
-?log
-exp(1)
+Other common mathematical operations use *functions*:
 
-# scientific notation works!
+```{r computing2,echo=TRUE,results='markup'}
+# calculate a square root using `sqrt`
+
+# calculate the remainder using `%%`
+
+# calculate a logarithm using `log`
+
+
+```
+
+What base does R assume you are using by default? How do we change the base?
+
+```{r}
+
+
+```
+
+```{r}
+exp(log(10))
+```
+
+R also recognizes scientific notation:
+```{r}
 5000000000 * 1000
 5e9 * 1e3
 ```
-
-Think of a mathematical operation you need - can you guess how to do it in R?
 
 # Assigning values to R objects
 
@@ -48,141 +66,195 @@ the value of R objects. (Add notes to help remind yourself what's going on!)
 
 ```{r assigning_values}
 # (variable name) <- (value, or code to create a value/object)
-val <- 5
+
 
 # (variable name) = (value, or code to create a value/object)
-val = 6 # equal sign *can* be used for assignment but is not conventional
+# equal sign *can* be used for assignment but is not conventional
 
+```
+Notice how the values we saved weren't printed out?
+
+```{r}
 # In both the console and in R chunks, 
 # running a variable name will print its value out
-val
-print(val)
 
-Val <- 7 # case-sensitive!
-print(c(val, Val))
 
-val <- 9 # can be overwritten
-print(c(val, Val))
-
+# We can also use the function `print`
 
 
 ```
 
-You can see these values change in the "Environment" tab in Rstudio.
+Variable names have a few rules:
 
-We can work with (and store) sequences and repetitions
-```{r sequences}
-mySeq <- 1:6
-mySeq
+- can't start with a number
+- case sensitive
+- can contain some special characters: `.`, `_`
 
-years <- seq(1952, 2007, by = 5)
-years
-length(years)
-
-country <- rep("Afghanistan", 12)
-country 
-
-## This is a comment: here is an example of non-numeric data
-countries <- c("Afghanistan", "India", "Pakistan")
-countries
-```
-
-Try calculating and saving values as variables in the chunk below:
-
-```{r try_it_yourself}
+```{r}
 
 ```
+
+You can over-write a variable once you've created it:
+```{r}
+
+```
+
+You can see these values change in the "Environment" tab in Rstudio!
 
 
 # Vectors in R
 
 The most basic form of an R object is a vector. In fact, individual (scalar) 
-values are vectors of length one. The variables we created earlier (val, Val, 
-mySeq, years) are all vectors!
+values are vectors of length one. The variables we created earlier are all 
+vectors!
 
 We can concatenate values into a vector with `c()`.
+
+```{r}
+# Use `c()` with numbers
+
+# Use `c()` with character strings
+
+```
+
+R Also has tools for defining repeatable patterns.
+
+(DRY: "Don't Repeat Yourself")
+```{r sequences}
+# Use `:` to increment by integers
+
+# Or use `seq` for more control
+
+```
 
 ## 1) Numeric vectors
 Also known as "double precision floating point"
 
 ```{r types_of_vectors1}
-nums <- c(1.1, 3, -5.7)
-myvals <- c(val, Val)
-devs <- rnorm(5)
-devs
-nums
+
+
 ```
 
 ## 2) Integer vectors
 Less common than numeric vectors, but it's good to know they exist since
 sometimes you'll see errors related to the difference between numeric and 
-integer vectors
+integer vectors.
 ```{r types_of_vectors2}
+# Create an integer by putting `L` at the end. 
 
-ints <- c(1L, 5L, -3L) # force storage as integer not decimal number
-## R Trivia: 'L' stands for 'long integer' (historical)
-notints <- c(1, 5, -3)
-identical(ints, notints)
+
 ```
+
+Integers are not numbers!
+```{r}
+identical(5L, 5)
+```
+
+R Trivia: 'L' stands for 'long integer' (historical)
+
 ## 3) Character vector
-Most common way of storing non-numeric data
+Most common way of storing non-numeric data. 
 
 ```{r types_of_vectors3}
-chars <- c("pine", "apple")
-paste(chars, collapse = '')
-paste("character", "vector", sep = " ")
 
+# create a character vector of your names
+
+```
+
+Character vectors must be wrapped in matching quotes (either " or ', but not a 
+mix), or else R will interpret it as a variable.
+
+```{r}
 chars <- c('hi', 'hallo', "mother's", 'father\'s', 
    "She said, 'hi'", "He said, \"hi\"" )  
 # the backslash is an "escape character"
-# make sure opening and closing characters match!
-chars
-cat(chars[5])
-cat(chars[6])
 
 ```
+
+Often we want to combine multiple character strings together:
+```{r}
+# use the function `paste0`
+
+```
+
+
 ## 4) Logical vector (or boolean vector)
+Logical values are either "TRUE" or "FALSE"
+
 ```{r types_of_vectors4}
+# create a logical vector
 
-bools <- c(TRUE, FALSE, TRUE)
-bools2 <- c(T, F, T) # less preferred (less legible)
-bools
-identical(bools, bools2)
-val == 8
-val <- 8 
-val = 9
-val >= 9 
-
-val !=10
 ```
+
+Logical values are often created from numerical comparisons:
+```{r}
+vals <- c(1, 8, 10)
+
+# Less than: <
+
+# Less than or equal to: <=
+
+# Greater than: >
+
+# Greater than or equal to: >=
+
+# Equal: ==
+
+# Not equal: !=
+
+
+```
+Make sure you use double equal signs for equality!
+Remember, single equal signs assigns:
+```{r}
+v1 <- 7
+v2 <- 9
+v1 == v2
+v1 = v2
+identical(v1, v2)
+```
+
+What if you combine data types?
 
 ```{r types_of_vectors5}
-## combination
-combi <- c("pizza", 9, TRUE)
-combi
+# create a combination vector:
 
-# How do I know what datatype something is?
-typeof(combi)
+
+# How do I know what datatype something is? function: `typeof`
 ```
 
 # Working with indices and subsets
 
+Use square brackets to refer to particular positions in a vector:
+
 ```{r indexing}
 vals <- seq(2, 12, by = 2)
 vals
-vals[4]
+vals[1]
 ```
 
 Can you guess what these will do before running the code??
 ```{r indexing2}
+vals
 vals[3:5]
 vals[c(1, 3)]
 vals[-c(1, 3)]
+```
+
+We can also use logical values!
+```{r}
 which_indices <- c(rep(TRUE, 3), rep(FALSE, 2), TRUE)
+which_indices
 vals[which_indices]
+
+vals == 6
+vals[vals == 6]
+vals[(vals %% 4) == 0]
 ```
 
 # Comparing Values
+
+We already saw numeric comparisons:
 ```{r comparisons}
 
 vec1 <- c(1, 2, 3, 4, 5)
@@ -192,22 +264,32 @@ vec1 < vec2
 
 vec1 == vec2
 vec1 != vec2
-## careful: 
-vec1 = vec2
-identical(vec1, vec2)
+```
 
-## using 'or'
-vec1 >= 3 | vec1 == exp(0) | vec1 < -7
+We can also do other types of comparisons:
+```{r}
 
+## using 'or': |
+vec1 >= 3 | vec1 < -7
+
+## using 'and': &
+vec1 >= 3 & vec1 %% 2 == 0 
+
+```
+
+What are the results of each of these?
+```{r}
 TRUE | FALSE
 FALSE | FALSE
 TRUE & FALSE
-## using 'and'
-vec1 >= 3 & vec1 %% 2 == 0 
-
-10 %% 2
-11 %% 2
+TRUE & TRUE
 ```
+
+What answer do you expect here?
+```{r}
+"apple" < "banana"
+```
+
 
 # Reading Data From A File
 
@@ -251,6 +333,7 @@ head(gap) # first few lines)
 tail(gap) # last few lines
 View(gap) # the whole shebang (avoid with very large datasets)
 dim(gap) # dimensions
+nrow(gap) # number of rows
 summary(gap) # basic info about each column
 ```
 
@@ -265,18 +348,37 @@ summary(gap) # basic info about each column
 ```{r functions1}
 median
 class(median)
-median(c(6, 7, 18, 9.2))
-median(gap[["lifeExp"]])
 ```
 
-Let's use this function to calculate something about the data set we just 
-imported
+```{r}
+# Use `median` to calculate the median of a vector
+
+
+```
+
+Lets use this function to calculate the median life expectancy in the data set.
+
+How do we refer to a column?
+
+```{r}
+# dollar notation: variable$column
+
+# double square brackets: variable[["column"]]
+
+```
+
+Now we can calculate median life expectancy:
 
 ```{r functions2}
-maxYear <- max(gap$year)
-lifeExp <- gap$lifeExp[gap$year == maxYear]
-median(lifeExp)
-# We just calculated the median life expectancy in 2007!
+
+```
+
+But wait, this data set has data from many years, what if we want to know the
+median just for 2007?
+
+```{r}
+# calculate median for the year 2007:
+
 ```
 
 * Functions generally take arguments, some of which are often optional.
@@ -311,7 +413,6 @@ You can use the `as` family of functions.
 
 ```{r converting_between_types}
 ints <- 1:10
-ints[4]
 as.character(ints)
 as.numeric(c('3.7', '4.8'))
 ```
@@ -355,11 +456,16 @@ Some of these questions will require you to search for the right function.
 **Hint**: use the function `apropos("key word")` to find something to use.
 
 
-1) The variable y contains all the life expectancy data in the "gap" data frame 
-we loaded earlier. Create a variable called 'x' that contains the mean life 
+1) The variable x contains all the life expectancy data in the "gap" data frame 
+we loaded earlier. Create a variable called 'y' that contains the mean life 
 expectancy. Then, create a vector of length 2 that contains the minimum and 
-maximum life expectancy. 
+maximum life expectancy and assign it to the value z.
 ```{r}
+x <- gap$lifeExp
+x
+
+# y <- ...
+# z <- ...
 
 ```
 
@@ -367,6 +473,7 @@ maximum life expectancy.
 significant digits.
 
 ```{r}
+x
 
 ```
 

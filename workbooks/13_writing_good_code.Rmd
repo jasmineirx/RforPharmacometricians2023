@@ -1,7 +1,7 @@
 ---
 title: 'Module 13: Writing Good Code & Advanced R'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -162,7 +162,7 @@ buggyFun(gap)
 
 ```  
 
-We can also insert ``browser()`` inside a function and R will stop there and 
+We can also insert `browser()` inside a function and R will stop there and 
 allow us to proceed with debugging statements.
 
 # Testing
@@ -199,17 +199,6 @@ up even before creating it in R. You can do this with some simple arithmetic.
 Every real number takes 8 bytes (integers and logicals take less; character 
 strings are complicated), so an object with, say, 1 million rows and 10 columns, 
 all numbers, would take roughly 8 * 1000000 * 10 bytes or 800 Mb.
-
-```{r}
-x <- rnorm(1e7)
-object.size(x)
-1e7*8/1e6  # direct calculation of Mb
-print(object.size(x), units = 'auto')
-x <- rnorm(1e8)
-gc()
-rm(x)
-gc()
-```
 
 # Scripting
 

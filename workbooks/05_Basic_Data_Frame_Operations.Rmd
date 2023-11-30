@@ -1,7 +1,7 @@
 ---
 title: 'Module 5: Basic Data Frame Operations'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -45,8 +45,8 @@ data structures.
 
 # Data frame Manipulation using `dplyr`
 
-The [`dplyr`](https://cran.r-project.org/web/packages/dplyr/dplyr.pdf) package 
-provides a number of very useful functions for manipulating data frames. 
+The [`dplyr`](https://rstudio.github.io/cheatsheets/data-transformation.pdf) 
+package provides a number of very useful functions for manipulating data frames. 
 Code written with `dplyr` is often easier to read than code written in "base R".
 
 We're going to learn how to subset data frames: how do we *filter* for the rows 
@@ -81,7 +81,7 @@ Let's take a look at the help documentation for select:
 The arguments for select are:
 
 * `.data` this is a data frame, and this is always the first argument for all 
-  tidyverse data frame manipulation functions/
+  tidyverse data frame manipulation functions
 * `...` this is a place holder for any number of other arguments that can 
   optionally be passed on. `select` is expecting the names (unquoted) of the 
   columns you would like to keep or extract.
@@ -89,8 +89,12 @@ The arguments for select are:
 
 ```{r}
 gap
-year_country_gdp_dplyr <- select(gap, year, country, gdpPercap)
-head(year_country_gdp_dplyr)
+```
+
+Let's use `select` to pick these columns: year, country, gdpPercap
+
+```{r}
+
 ```
 
 ```{r}
@@ -104,15 +108,14 @@ This is equivalent to the base R subsetting function that you may have noticed
 before:
 
 ```{r}
-year_country_gdp_base <- gap[,c("year", "country", "gdpPercap")]
-head(year_country_gdp_base)
+gap[,c("year", "country", "gdpPercap")]
 ```
 
-We can even check that these two data frames are equivalent:
 
+What's the difference between these two operations?
 ```{r}
-# checking equivalence: TRUE indicates an exact match between these objects
-all.equal(year_country_gdp_dplyr, year_country_gdp_base)
+gap[["continent"]]
+gap["continent"]
 ```
 
 ## `dplyr::filter`
@@ -121,8 +124,8 @@ Now let's say we're only interested in African countries. We can use `filter`
 to select only the rows where `continent` is `Africa`.
 
 ```{r}
-gap_africa <- filter(gap, continent == "Africa")
-head(gap_africa, 15)
+
+
 ```
 
 `filter` works on *rows* while `select` works on *columns*
@@ -130,13 +133,6 @@ head(gap_africa, 15)
 `filter` expects a logical expression, and will *keep* all rows where that logical expression evaluates as `TRUE`.
 
 ```{r}
-nrow(gap)                     # whole
-nrow(year_country_gdp_dplyr)  # select
-nrow(gap_africa)              # filter
-ncol(gap)                     # whole
-ncol(year_country_gdp_dplyr)  # select
-ncol(gap_africa)              # filter
-
 ?dplyr::filter
 ```
 
@@ -150,6 +146,7 @@ africa_country_year_gdp <- select(gap_africa, country, year, gdpPercap)
 
 head(africa_country_year_gdp)
 nrow(africa_country_year_gdp)
+ncol(africa_country_year_gdp)
 ```
 
 That's not bad, but if we needed to do many different types of data 
@@ -175,16 +172,22 @@ coffee_beans %>%
   grind() %>% 
   add("hot water") %>% 
   filter() %>% 
-  drink().
+  drink()
+
+raw_data %>%
+  convert_units() %>%
+  calculate_outcome_metric() %>%
+  fit_model() %>%
+  plot_result()
 
 Since the pipe grammar is unlike anything we've seen in R before, let's 
-repeat what we've done above using pipes.
+repeat what we've done above using pipes:
+
+1. `filter` for countries in Africa
+2. `select` country, year, gdpPercap
 
 ```{r}
-africa_country_year_gdp_piped <- gap %>%
-  filter(continent == "Africa") %>% 
-  select(country, year, gdpPercap)
-head(africa_country_year_gdp_piped, 15)
+
 ```
 
 
@@ -197,8 +200,14 @@ it to `select`.
 In this case we don't specify which data object we use in the call to 
 `select()` or to `filter()` since we've piped it in.
 
+**Note**: The `%>%` pipe is part of `dplyr`. In May 2021, a new version of R
+was released that included it's own pipe: `|>`. They're (nearly) 
+interchangeable!
+
 ```{r}
-identical(africa_country_year_gdp_piped, africa_country_year_gdp)
+gap |>
+  filter(continent == "Europe") |>
+  select(country, year, lifeExp)
 ```
 
 **Aside**: There is a good chance you have encountered pipes before in the 
@@ -214,23 +223,21 @@ has a function for doing this programmatically using `arrange`.
 For example, let's reorder the rows of `gap` by population:
 
 ```{r}
-gap %>%
-  arrange(pop) %>%
-  head()
+
 
 ```
+
 By default, `arrange` orders from lowest to highest. We can use `desc` to order it in reverse.
+
 ```{r}
-gap %>%
-  arrange(desc(pop)) %>%
-  head()
+
 
 ```
- `arrange` also allows specification of multiple columns:
+
+`arrange` also allows specification of multiple columns:
 ```{r}
-gap %>%
-  arrange(year, desc(pop)) %>%
-  head()
+
+
 ```
 
 # Breakout
@@ -240,7 +247,8 @@ gap %>%
 1. Use `dplyr` to create a data frame containing data from before 1975 with every column except `continent`.
 
 ```{r}
-  
+
+
 ```
 
 2. How many countries had a life expectancy greater than 60 in the year 1982?
@@ -260,6 +268,7 @@ gap %>%
 4. Use `dplyr` to sort the gap data set in reverse alphabetical order.
 
 ```{r}
+
 
 
 ```

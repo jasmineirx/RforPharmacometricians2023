@@ -1,7 +1,7 @@
 ---
 title: '11) Subsetting in base R'
 author: "Jasmine Hughes"
-date: "9/17/2021"
+date: "12/01/2023"
 output: html_document
 ---
 
@@ -249,7 +249,11 @@ length(round(gap1$lifeExp))
 
 gap1 
 ```
-R "tries its best" and will start filling with the first value in the vector you supplied and keep going until it runs out of rows to replace. It will loop through the replacement vector again until it's done.
+
+R "tries its best" and will start filling with the first value in the vector you
+supplied and keep going until it runs out of rows to replace. It will loop 
+through the replacement vector again until it's done.
+
 ```{r eval}
 gap2$lifeExp[gap2$lifeExp > 50] <- round(gap2$lifeExp[gap2$lifeExp > 50])
 
