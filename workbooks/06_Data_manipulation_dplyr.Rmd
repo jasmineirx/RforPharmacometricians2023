@@ -114,6 +114,7 @@ grouped_gap <- gap %>%
   group_by(continent)
 
 head(grouped_gap)
+head(gap)
 ```
 
 A grouped data frame doesn't look any different (it won't change the order of 
@@ -155,7 +156,11 @@ The output is a new data frame reduced in size, with one row per group.
 Let's use summarize to calculate the mean life expectancy per continent
 
 ```{r}
-
+gap %>%
+  group_by(continent) %>%
+  summarize(
+    mean_le = mean(lifeExp)
+  )
 ```
 
 
@@ -168,7 +173,11 @@ even better -- the function `group_by()` allows us to group by multiple
 variables. Let's group by `year` and `continent`.
 
 ```{r}
-
+gap %>%
+  group_by(continent, year) %>%
+  summarize(
+    mean_le = mean(lifeExp)
+  )
 
 ```
 
@@ -177,7 +186,12 @@ defining 1 new variable in `summarize()`. Let's do mean and standard deviation
 (`sd`)
 
 ```{r}
-
+gap %>%
+  group_by(continent, year) %>%
+  summarize(
+    mean_le = mean(lifeExp),
+    sd_le = sd(lifeExp)
+  )
 
 
 ```
@@ -190,7 +204,11 @@ similar to `summarize()` except it creates new variables in the same data frame
 that you pass into it.
 
 ```{r}
+gap %>%
+  group_by(continent) %>%
+  mutate(mean_le = mean(lifeExp))
 
+nrow(gap)
 ```
 
 How many rows do we have after `summarize`? How many rows do we have after 
@@ -212,7 +230,8 @@ input dataframe (as if your grouping variable was "everything").
 For example, the mean life expectancy over the whole data set:
 
 ```{r}
-
+gap %>%
+  mutate(mean_le = mean(lifeExp))
 ```
 
 And if you use an aggregation function such as `mean()` within `summarize()` 
@@ -220,7 +239,8 @@ without using `group_by()`, you'll simply create an output dataframe with one
 row (i.e., the whole input dataframe is a single group).
 
 ```{r}
-
+gap %>%
+  summarize(mean_le = mean(lifeExp))
 
 ```
 
@@ -232,6 +252,12 @@ will use `mutate`.
 Example: calculate the ratio of country life expectancy to world life expectancy
 
 ```{r}
+gap %>%
+  mutate(
+    mean_le = mean(lifeExp),
+    ratio_le_mean = lifeExp / mean_le
+  )
+
 
 ```
 
@@ -241,7 +267,11 @@ Example: converting GDP currency
 conversion_rate <- 1.19
 
 # changing the same column:
+gap %>%
+  mutate(gdpEuros = gdpPercap * 1.19)
 
+gap %>%
+  mutate(gdpPercap = gdpPercap * 1.19)
  
  
 # or, assigning a single value to a new column:
@@ -257,7 +287,11 @@ conversion_rate <- 1.19
 continent.
 
 ```{r}
-
+gap %>%
+  group_by(continent) %>%
+  summarise(
+    median_le = median(lifeExp)
+  )
 
 ```
 
@@ -267,7 +301,11 @@ if the first observation is Afghanistan in 1952, the new column would contain
 the population of Asia in 1952.
 
 ```{r}
-
+gap %>%
+  group_by(continent, year) %>%
+  mutate(
+    pop_continent = sum(pop)
+  )
 
 ```
 
@@ -278,7 +316,12 @@ in descending order (so that the relatively richest country/years are listed
 first)
 
 ```{r}
-
+gap %>%
+  group_by(continent, year) %>%
+  mutate(
+    gdpPercap_diff = gdpPercap - mean(gdpPercap),
+  ) %>%
+  arrange(desc(gdpPercap_diff))
 ```
 
 4. Use `dplyr` to create a data frame counting the number of countries in each 
@@ -286,7 +329,15 @@ continent. Hint: the function `n()` might be useful!
 
 ```{r}
 
+gap %>%
+  group_by(continent) %>%
+  summarise(n_countries = n_distinct(country))
 
+gap %>%
+  filter(year == 2007) %>%
+  group_by(continent) %>%
+  summarize(n_countries = n())
+  
 ```
 
 5. Bonus: building from your solution to answer 4, create a data frame counting 

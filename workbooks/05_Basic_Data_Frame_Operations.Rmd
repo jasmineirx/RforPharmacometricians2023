@@ -10,6 +10,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
+
 # Overview
 
 > It is often said that 80% of data analysis is spent on the process of cleaning 
@@ -89,6 +90,7 @@ The arguments for select are:
 
 ```{r}
 gap
+select(gap, country, year, lifeExp)
 ```
 
 Let's use `select` to pick these columns: year, country, gdpPercap
@@ -108,7 +110,7 @@ This is equivalent to the base R subsetting function that you may have noticed
 before:
 
 ```{r}
-gap[,c("year", "country", "gdpPercap")]
+gap[,c("year", "country", "lifeExp")]
 ```
 
 
@@ -124,7 +126,7 @@ Now let's say we're only interested in African countries. We can use `filter`
 to select only the rows where `continent` is `Africa`.
 
 ```{r}
-
+filter(gap, continent == "Africa")
 
 ```
 
@@ -147,6 +149,7 @@ africa_country_year_gdp <- select(gap_africa, country, year, gdpPercap)
 head(africa_country_year_gdp)
 nrow(africa_country_year_gdp)
 ncol(africa_country_year_gdp)
+dim(gap)
 ```
 
 That's not bad, but if we needed to do many different types of data 
@@ -187,6 +190,9 @@ repeat what we've done above using pipes:
 2. `select` country, year, gdpPercap
 
 ```{r}
+gap %>%
+  filter(continent == "Africa") %>%
+  select(country, year, gdpPercap)
 
 ```
 
@@ -223,20 +229,22 @@ has a function for doing this programmatically using `arrange`.
 For example, let's reorder the rows of `gap` by population:
 
 ```{r}
-
-
+gap %>%
+  arrange(pop)
 ```
 
 By default, `arrange` orders from lowest to highest. We can use `desc` to order it in reverse.
 
 ```{r}
-
+gap %>%
+  arrange(desc(pop))
 
 ```
 
 `arrange` also allows specification of multiple columns:
 ```{r}
-
+gap %>%
+  arrange(desc(year), pop)
 
 ```
 
@@ -247,28 +255,53 @@ By default, `arrange` orders from lowest to highest. We can use `desc` to order 
 1. Use `dplyr` to create a data frame containing data from before 1975 with every column except `continent`.
 
 ```{r}
-
+gap %>%
+  filter(year < 1975) %>%
+  select(-continent)
 
 ```
 
 2. How many countries had a life expectancy greater than 60 in the year 1982?
 
 ```{r}
+gap %>%
+  filter(year == 1982) %>%
+  filter(lifeExp > 60) %>%
+  nrow()
 
 
+gap %>%
+  filter(
+    year == 1982,
+    lifeExp > 60
+  ) %>%
+  nrow()
 ```
 
 3. Use `dplyr` and `grepl()` to filter for countries with the letter "z" in their name.
 
 ```{r}
+?grepl
 
+gap %>%
+  filter(grepl("Z|z", country)) %>%
+  arrange(desc(country))
+
+gap %>%
+  filter(grepl("z", tolower(country)))  %>%
+  arrange(desc(country))
+
+gap %>%
+  filter(grepl("z", country, ignore.case=TRUE))  %>%
+  arrange(desc(country))
 
 ```
 
 4. Use `dplyr` to sort the gap data set in reverse alphabetical order.
 
 ```{r}
-
+gap %>%
+  arrange(desc(country))
 
 
 ```

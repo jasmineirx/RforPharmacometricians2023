@@ -28,7 +28,6 @@ ls.str() # list and describe variables
 Finally we can save the objects in our R session:
 ```{r}
 ls()
-val
 save.image('module4.Rda')
 rm(list = ls())
 ls()
@@ -138,6 +137,10 @@ library(lubridate) # a tidyverse package
 lubridate::now()
 search_after_library_load <- search()
 setdiff(search_after_library_load, original_search)
+
+search_after_refresh <- search()
+
+setdiff(search_after_library_load, search_after_refresh)
 ```
 
 To see what *libraries* (i.e., directory locations) R is retrieving packages 
@@ -160,6 +163,7 @@ stats::t.test(rnorm(15, 6), rnorm(20, 7))
 # This is useful when two functions have the same name:
 ?filter
 ?dplyr::filter
+stats::filter
 
 ```
 
@@ -302,6 +306,8 @@ Here you have a number of options.
 *praise*. What does the code below do?
 
 ```{r }
+install.packages("praise")
+library(praise)
 praise::praise()
 
 ```
@@ -309,7 +315,7 @@ praise::praise()
 2) Figure out what your current working directory is.
 
 ```{r }
-
+getwd()
 
 ```
 
@@ -318,6 +324,8 @@ a similar application.
 
 ```{r }
 mtcars # it comes pre-installed with R!
+
+write.csv(mtcars, "~/Downloads/mtcars.csv")
 ```
 
 ### Using the ideas
