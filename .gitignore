@@ -3,3 +3,8 @@
 .DS_Store
 .Rproj.user/*
 .Rproj.user
+example_scripts/Example_Rmarkdown_analysis.html
+example_scripts/iris_graph.png
+example_scripts/iris_graph_rmd.png
+example_scripts/summarized_iris.csv
+workbooks/module4.Rda
